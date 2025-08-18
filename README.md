@@ -20,6 +20,7 @@
     │           missing_value_analysis.py
     │           multivariate_analysis.py
     │           univariate_analysis.py
+    │           model_diagnostics.py
     │           __init__.py
     │
     ├───data
@@ -30,14 +31,10 @@
     │           Clean_Dataset.csv
     │           economy.csv
     │
-    ├───pipeline
-    │       deployment_pipeline.py
-    │       training_pipeline.py
-    │       __init__.py
-    │
     ├───pipelines
     │       deployment_pipeline.py
     │       training_pipeline.py
+    │       __init__.py
     │
     ├───project_utils
     │       init_project.py
@@ -48,7 +45,6 @@
     │       data_splitter.py
     │       feature_engineering.py
     │       model_building.py
-    │       model_diagnostics.py
     │       __init__.py
     │
     └───steps

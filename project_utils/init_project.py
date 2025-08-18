@@ -16,6 +16,7 @@ list_of_files = [
     "analysis/analyze_src/bivariate_analysis.py",
     "analysis/analyze_src/multivariate_analysis.py",
     "analysis/analyze_src/missing_value_analysis.py",
+    "analysis/analyze_src/model_diagnostics.py",
     "analysis/eda.ipynb",
     "src/__init__.py",
     "src/data_ingester.py",
@@ -23,7 +24,6 @@ list_of_files = [
     "src/feature_engineering.py",
     "src/data_splitter.py",
     "src/model_building.py",
-    "src/model_diagnostics.py",
     "steps/__init__.py",
     "steps/data_ingester_step.py",
     "steps/data_cleaning_step.py",
@@ -31,9 +31,9 @@ list_of_files = [
     "steps/data_splitter_step.py",
     "steps/model_building_step.py",
     "steps/model_evaluator.py",
-    "pipeline/__init__.py",
-    "pipeline/training_pipeline.py",
-    "pipeline/deployment_pipeline.py",
+    "pipelines/__init__.py",
+    "pipelines/training_pipeline.py",
+    "pipelines/deployment_pipeline.py",
     ".gitignore",
     "requirements.txt",
     "setup.py",
@@ -57,6 +57,7 @@ for filepath in list_of_files:
     else:
         logging.info(f"File {filepath} already exists and is not empty.")
         
+
 gitignore_content = """# Python
 __pycache__/
 *.py[cod]
