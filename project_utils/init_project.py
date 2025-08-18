@@ -11,12 +11,15 @@ logging.info("Creating Project Scaffold.")
 list_of_files = [
     ".github/workflows/.gitkeep",
     "data/.gitkeep",              # creates the empty data/ folder
+    "analysis/analyze_src/__init__.py",
+    "analysis/analyze_src/univariate_analysis.py",
+    "analysis/analyze_src/bivariate_analysis.py",
+    "analysis/analyze_src/multivariate_analysis.py",
+    "analysis/analyze_src/missing_value_analysis.py",
+    "analysis/eda.ipynb",
     "src/__init__.py",
     "src/data_ingester.py",
     "src/data_cleaning.py",
-    "src/univariate_analysis.py",
-    "src/bivariate_analysis.py",
-    "src/multivariate_analysis.py",
     "src/feature_engineering.py",
     "src/data_splitter.py",
     "src/model_building.py",
@@ -54,9 +57,35 @@ for filepath in list_of_files:
     else:
         logging.info(f"File {filepath} already exists and is not empty.")
         
+gitignore_content = """# Python
+            __pycache__/
+            *.py[cod]
+            *.egg-info/
+            .env
+            .venv/
+            .ipynb_checkpoints/
+
+            # Data
+            data/
+            !data/.gitkeep
+
+            # Logs
+            *.log
+
+            # OS
+            .DS_Store
+            Thumbs.db
+            """
 # Step 2: Initialize Git repo if not already
 if not Path(".git").exists():
     subprocess.run(["git", "init"], check=True)
     logging.info("Initialized a new Git repository.")
 else:
     logging.info("Git repository already initialized.")
+
+# Step 3: Populate .gitignore
+gitignore_path = Path(".gitignore")
+if not gitignore_path.exists() or gitignore_path.stat().st_size == 0:
+    with open(gitignore_path, "w") as f:
+        f.write(gitignore_content.strip() + "\n")
+    logging.info("Populated .gitignore with Python template.")

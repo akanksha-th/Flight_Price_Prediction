@@ -7,10 +7,20 @@
     │   run_deployment.py
     │   run_pipeline.py
     │   setup.py
-    │   
+    │
     ├───.github
     │   └───workflows
     │           .gitkeep
+    │
+    ├───analysis
+    │   │   eda.ipynb
+    │   │
+    │   └───analyze_src
+    │           bivariate_analysis.py
+    │           missing_value_analysis.py
+    │           multivariate_analysis.py
+    │           univariate_analysis.py
+    │           __init__.py
     │
     ├───data
     │   │   .gitkeep
