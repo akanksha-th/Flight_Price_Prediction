@@ -58,24 +58,24 @@ for filepath in list_of_files:
         logging.info(f"File {filepath} already exists and is not empty.")
         
 gitignore_content = """# Python
-            __pycache__/
-            *.py[cod]
-            *.egg-info/
-            .env
-            .venv/
-            .ipynb_checkpoints/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.venv/
+.ipynb_checkpoints/
 
-            # Data
-            data/
-            !data/.gitkeep
+# Data
+data/
+!data/.gitkeep
 
-            # Logs
-            *.log
+# Logs
+*.log
 
-            # OS
-            .DS_Store
-            Thumbs.db
-            """
+# OS
+.DS_Store
+Thumbs.db
+"""
 # Step 2: Initialize Git repo if not already
 if not Path(".git").exists():
     subprocess.run(["git", "init"], check=True)
