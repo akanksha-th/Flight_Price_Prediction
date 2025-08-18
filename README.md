@@ -43,15 +43,12 @@
     │       init_project.py
     │
     ├───src
-    │       bivariate_analysis.py
     │       data_cleaning.py
     │       data_ingester.py
     │       data_splitter.py
     │       feature_engineering.py
     │       model_building.py
     │       model_diagnostics.py
-    │       multivariate_analysis.py
-    │       univariate_analysis.py
     │       __init__.py
     │
     └───steps
