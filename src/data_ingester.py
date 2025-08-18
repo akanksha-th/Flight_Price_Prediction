@@ -21,27 +21,27 @@ class DataIngester(ABC):
         os.makedirs(self.download_dir, exist_ok=True)
         self.df: Optional[pd.DataFrame] = None
 
-        @abstractmethod
-        def ingest(self) -> pd.DataFrame:
-            """Ingests data and returns a dataframe"""
-            pass
+    @abstractmethod
+    def ingest(self) -> pd.DataFrame:
+        """Ingests data and returns a dataframe"""
+        pass
 
-        @staticmethod
-        def _read_csv(filepath: str, **kwargs) -> pd.DataFrame:
-            return pd.read_csv(filepath, **kwargs)
+    @staticmethod
+    def _read_csv(filepath: str, **kwargs) -> pd.DataFrame:
+        return pd.read_csv(filepath, **kwargs)
         
-        @staticmethod
-        def _read_json(filepath: str, **kwargs) -> pd.DataFrame:
-            return pd.read_json(filepath, **kwargs)
+    @staticmethod
+    def _read_json(filepath: str, **kwargs) -> pd.DataFrame:
+        return pd.read_json(filepath, **kwargs)
         
-        @staticmethod
-        def _read_parquet(filepath: str, **kwargs) -> pd.DataFrame:
-            return pd.read_parquet(filepath, **kwargs)
+    @staticmethod
+    def _read_parquet(filepath: str, **kwargs) -> pd.DataFrame:
+        return pd.read_parquet(filepath, **kwargs)
         
-        @staticmethod
-        def _extract_zip(zip_path: str, extract_to: str):
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(extract_to)
+    @staticmethod
+    def _extract_zip(zip_path: str, extract_to: str):
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(extract_to)
 
 
 class FileDataIngester(DataIngester):
@@ -71,11 +71,11 @@ class FileDataIngester(DataIngester):
                     if f_ext in ['.csv', '.json', '.parquet']:
                         filepath = os.path.join(root, f)
                         if ext == ".csv":
-                            self.df = self._read_csv(self.source)
+                            self.df = self._read_csv(filepath)
                         elif ext == ".json":
-                            self.df = self._read_json(self.source)
+                            self.df = self._read_json(filepath)
                         elif ext == ".parquet":
-                            self.df = self._read_parquet(self.source)
+                            self.df = self._read_parquet(filepath)
                         return self.df
             raise FileNotFoundError("No supported data file inside ZIP archive")
         else:
@@ -118,7 +118,8 @@ def get_data_ingester(source: str, download_dir: str = './data') -> DataIngester
 
 
 if __name__ == "__main__":
-    source_path_or_url = "your-dataset-url-or-path"
-    ingester = get_data_ingester(source_path_or_url)
-    df = ingester.ingest()
-    print(df.head())
+    # source_path_or_url = "your-dataset-url-or-path"
+    # ingester = get_data_ingester(source_path_or_url)
+    # df = ingester.ingest()
+    # print(df.head())
+    pass

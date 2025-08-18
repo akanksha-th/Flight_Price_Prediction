@@ -6,20 +6,32 @@ import subprocess
 logging.basicConfig(level=logging.INFO,
                     format='[%(asctime)s]: %(message)s')
 
-init_script_path = Path("project_utils/init_project.py")
-init_script_path.parent.mkdir(parents=True, exist_ok=True)
-logging.info("Created project_utils/init_project.py")
+logging.info("Creating Project Scaffold.")
 
 list_of_files = [
     ".github/workflows/.gitkeep",
-    "project_utils/init_project.py",
-    "project_utils/fetching_data.py",
     "data/.gitkeep",              # creates the empty data/ folder
-    "eda/eda_helper_functions.py",
-    "eda/eda_and_fe.py",
+    "src/__init__.py",
+    "src/data_ingester.py",
+    "src/data_cleaning.py",
+    "src/univariate_analysis.py",
+    "src/bivariate_analysis.py",
+    "src/multivariate_analysis.py",
+    "src/feature_engineering.py",
+    "src/data_splitter.py",
+    "src/model_building.py",
+    "src/model_diagnostics.py",
+    "steps/__init__.py",
+    "steps/data_ingester_step.py",
+    "steps/data_cleaning_step.py",
+    "steps/feature_engineering_step.py",
+    "steps/data_splitter_step.py",
+    "steps/model_building_step.py",
+    "steps/model_evaluator.py",
+    "pipeline/__init__.py",
+    "pipeline/training_pipeline.py",
+    "pipeline/deployment_pipeline.py",
     ".gitignore",
-    ".dvcignore",
-    "Dockerfile",
     "requirements.txt",
     "setup.py",
     "README.md"
@@ -48,11 +60,3 @@ if not Path(".git").exists():
     logging.info("Initialized a new Git repository.")
 else:
     logging.info("Git repository already initialized.")
-
-# Step 3: Initialize DVC if not already
-if not Path(".dvc").exists():
-    subprocess.run(["dvc", "init"], check=True)
-    logging.info("Initialized DVC in the project.")
-else:
-    logging.info("DVC already initialized.")
-
