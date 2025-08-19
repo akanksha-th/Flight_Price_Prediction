@@ -13,7 +13,7 @@
     │           .gitkeep
     │
     ├───analysis
-    │   │   eda.ipynb
+    │   │   eda_and_fe.ipynb
     │   │
     │   └───analyze_src
     │           bivariate_analysis.py
@@ -43,7 +43,7 @@
     │       data_cleaning.py
     │       data_ingester.py
     │       data_splitter.py
-    │       feature_engineering.py
+    │       feature_transformation.py
     │       model_building.py
     │       __init__.py
     │
@@ -51,7 +51,7 @@
             data_cleaning_step.py
             data_ingester_step.py
             data_splitter_step.py
-            feature_engineering_step.py
+            feature_transformation_step.py
             model_building_step.py
-            model_evaluator.py
+            model_evaluator_step.py
             __init__.py

@@ -34,7 +34,7 @@ list_of_files = [
     "steps/feature_transformation_step.py",
     "steps/data_splitter_step.py",
     "steps/model_building_step.py",
-    "steps/model_evaluator.py",
+    "steps/model_evaluator_step.py",
 
     "pipelines/__init__.py",
     "pipelines/training_pipeline.py",
