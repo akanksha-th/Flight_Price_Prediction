@@ -1,7 +1,6 @@
 import pandas as pd
 from zenml import step
 
-
 @step
-def data_cleaning():
+def model_evaluator():
     pass

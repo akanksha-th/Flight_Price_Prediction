@@ -10,30 +10,36 @@ logging.info("Creating Project Scaffold.")
 
 list_of_files = [
     ".github/workflows/.gitkeep",
+
     "data/.gitkeep",              # creates the empty data/ folder
+
     "analysis/analyze_src/__init__.py",
     "analysis/analyze_src/univariate_analysis.py",
     "analysis/analyze_src/bivariate_analysis.py",
     "analysis/analyze_src/multivariate_analysis.py",
     "analysis/analyze_src/missing_value_analysis.py",
     "analysis/analyze_src/model_diagnostics.py",
-    "analysis/eda.ipynb",
+    "analysis/eda_and_fe.ipynb",
+
     "src/__init__.py",
     "src/data_ingester.py",
     "src/data_cleaning.py",
-    "src/feature_engineering.py",
+    "src/feature_transformation.py",
     "src/data_splitter.py",
     "src/model_building.py",
+
     "steps/__init__.py",
     "steps/data_ingester_step.py",
     "steps/data_cleaning_step.py",
-    "steps/feature_engineering_step.py",
+    "steps/feature_transformation_step.py",
     "steps/data_splitter_step.py",
     "steps/model_building_step.py",
     "steps/model_evaluator.py",
+
     "pipelines/__init__.py",
     "pipelines/training_pipeline.py",
     "pipelines/deployment_pipeline.py",
+    
     ".gitignore",
     "requirements.txt",
     "setup.py",
