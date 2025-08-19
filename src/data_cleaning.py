@@ -32,14 +32,14 @@ class PreEDALightCleaner(DataCleaner):
     def run(self) -> pd.DataFrame:
         if self._df is None:
             raise ValueError("DataFrame not found")
-        return (
-            self
-            ._standardize_column_names()
-            ._convert_obvious_dtypes()
-            ._drop_empty_columns()
-            ._drop_duplicates()
-            ._df
-        )
+        
+        self._standardize_column_names()
+        self._convert_obvious_dtypes()
+        self._drop_empty_columns()
+        self._drop_duplicates()
+        PreEDALightCleaner.info_summary(self._df)
+            
+        return self._df
     
     # ---------- Internal cleaning steps ---------- 
     def _standardize_column_names(self):
@@ -132,7 +132,8 @@ class PostEDAFullCleaner(DataCleaner):
 
 
 if __name__ == "__main__":
-    df = pd.read_csv("path-to-the-csv-data-file")
-    PreEDALightCleaner.info_summary(df)
-    cleaner = PreEDALightCleaner(df)
-    cleaned_df = cleaner.run()
+    # df = pd.read_csv("path-to-the-csv-data-file")
+    # PreEDALightCleaner.info_summary(df)
+    # cleaner = PreEDALightCleaner(df)
+    # cleaned_df = cleaner.run()
+    pass
