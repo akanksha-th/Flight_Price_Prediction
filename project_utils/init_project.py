@@ -25,6 +25,7 @@ list_of_files = [
     "src/data_ingester.py",
     "src/data_cleaning.py",
     "src/feature_transformation.py",
+    "src/feature_selection.py",
     "src/data_splitter.py",
     "src/model_building.py",
 
@@ -32,6 +33,7 @@ list_of_files = [
     "steps/data_ingester_step.py",
     "steps/data_cleaning_step.py",
     "steps/feature_transformation_step.py",
+    "steps/feature_selection_step.py",
     "steps/data_splitter_step.py",
     "steps/model_building_step.py",
     "steps/model_evaluator_step.py",

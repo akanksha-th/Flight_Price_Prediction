@@ -74,63 +74,6 @@ class PreEDALightCleaner(DataCleaner):
         return skim(df)
     
 
-class PostEDAFullCleaner(DataCleaner):
-    """
-    Performs final cleaning after EDA: imputation, outlier handling, encoding
-    Also, generates transformation diagnostics comparing original vs transformed data.
-    """
-
-    def __init__(self, df: pd.DataFrame,
-                 impute_strategy_num='mean',
-                 impute_strategy_cat='most frequent',
-                 encoding='onehot',
-                 scaling='standard',
-                 outlier_method='zscore',
-                 z_thresh=3):
-        super().__init__(df)
-        self.impute_strategy_num = impute_strategy_num
-        self.impute_strategy_cat = impute_strategy_cat
-        self.encoding = encoding
-        self.scaling = scaling
-        self.outlier_method = outlier_method
-        self.z_thresh = z_thresh
-
-    def run(self):
-        self._handle_missing_values()
-        self._encode_categoricals()
-        self._scale_features()
-        self._handle_outliers()
-        report = self._generate_diagnostics_report()
-        return self._df, report
-    
-    # ---------- Cleaning Methods ---------- 
-    def _handle_missing_values(self):
-        num_cols = self._df.select_dtypes(include='number').columns
-        cat_cols = self._df.select_dtypes(exclude='number').columns
-
-        if len(num_cols)>0:
-            num_imputer = SimpleImputer(strategy=self.impute_strategy_num)
-            self._df[num_cols] = num_imputer.fit_transform(self._df[num_cols])
-
-        elif len(cat_cols)>0:
-            cat_imputer = SimpleImputer(strategy=self.impute_strategy_cat)
-            self._df[cat_cols] = cat_imputer.fit_transform(self._df[cat_cols])
-
-    def _encode_categoricals(self):
-        pass
-
-    def _scale_features(self):
-        pass
-
-    def _handle_outliers(self):
-        pass
-
-    # ---------- Diagnostics ---------- 
-    def _generate_diagnostics_report(self):
-        pass
-
-
-
 if __name__ == "__main__":
     # df = pd.read_csv("path-to-the-csv-data-file")
     # PreEDALightCleaner.info_summary(df)
