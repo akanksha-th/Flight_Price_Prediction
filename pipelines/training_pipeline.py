@@ -1,11 +1,14 @@
 from zenml import Model, pipeline
 
-from steps.data_ingester_step import data_ingestion
-from steps.data_cleaning_step import basic_data_cleaning, final_data_cleaning
-from steps.feature_transformation_step import feature_transformation
-from steps.data_splitter_step import split_data
-from steps.model_building_step import model_building
-from steps.model_evaluator_step import model_evaluator
+from steps import (
+    data_ingestion,
+    basic_data_cleaning,
+    final_data_cleaning,
+    feature_transformation,
+    split_data,
+    model_building,
+    model_evaluator,
+)
 
 @pipeline(
     model=Model(

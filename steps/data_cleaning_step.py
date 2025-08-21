@@ -9,7 +9,7 @@ def basic_data_cleaning(df: pd.DataFrame)-> Dict[str, Any]:
     """ZenML step to clean data before EDA."""
     cleaner = PreEDALightCleaner(df)
     cleaned_df = cleaner.run()
-    report = cleaner.info_summary()
+    report = cleaner.info_summary(cleaned_df)
     return {"cleaned_data": cleaned_df, "summary": report}
 
 @step
