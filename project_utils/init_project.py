@@ -38,6 +38,8 @@ list_of_files = [
     "steps/model_building_step.py",
     "steps/model_evaluator_step.py",
 
+    "tests/test_ingester.py",
+
     "pipelines/__init__.py",
     "pipelines/training_pipeline.py",
     "pipelines/deployment_pipeline.py",

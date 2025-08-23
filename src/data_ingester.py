@@ -4,6 +4,7 @@ import opendatasets as od
 import zipfile
 from abc import ABC, abstractmethod
 from typing import Optional
+import logging
 
 
 class DataIngester(ABC):
@@ -20,6 +21,9 @@ class DataIngester(ABC):
         self.download_dir = download_dir
         os.makedirs(self.download_dir, exist_ok=True)
         self.df: Optional[pd.DataFrame] = None
+
+        logging.info(f"Ingesting data from {self.source} ...")
+        logging.info(f"Loaded Data Shape: {self.df.shape}")
 
     @abstractmethod
     def ingest(self) -> pd.DataFrame:
@@ -46,8 +50,8 @@ class DataIngester(ABC):
 
 class FileDataIngester(DataIngester):
     """
-    Ingest data from a local file.
-    Supports CSV, JSON, Parquet, ZIP.
+    Ingest data from a local file. Supports CSV, JSON, Parquet, ZIP.
+    Returns a pandas DataFrame.
     """
 
     def ingest(self) -> pd.DataFrame:
@@ -70,11 +74,11 @@ class FileDataIngester(DataIngester):
                     f_ext = os.path.splitext(f)[1].lower()
                     if f_ext in ['.csv', '.json', '.parquet']:
                         filepath = os.path.join(root, f)
-                        if ext == ".csv":
+                        if f_ext == ".csv":
                             self.df = self._read_csv(filepath)
-                        elif ext == ".json":
+                        elif f_ext == ".json":
                             self.df = self._read_json(filepath)
-                        elif ext == ".parquet":
+                        elif f_ext == ".parquet":
                             self.df = self._read_parquet(filepath)
                         return self.df
             raise FileNotFoundError("No supported data file inside ZIP archive")
@@ -86,12 +90,12 @@ class FileDataIngester(DataIngester):
 
 class URLDataIngester(DataIngester):
     """
-    Downloads dataset from URL or open datasets repo and loads into a DataFrame.
-    Uses opendatasets for supported URLs.
+    Downloads dataset from URL or open datasets repo and loads into a DataFrame. Uses opendatasets for supported URLs.
+    Returns a pandas DataFrame.
     """
 
     def ingest(self) -> pd.DataFrame:
-        od.download(self.source, self.download_dir)
+        od.download(self.source, self.download_dir, force=False) #Do Not re-download
 
         for root, _, files in os.walk(self.download_dir):
             for f in files:
@@ -109,13 +113,15 @@ class URLDataIngester(DataIngester):
 
 
 def get_data_ingester(source: str, download_dir: str = './data') -> DataIngester:
-    if source.startswith("http") or source.startswith("www"):
+    if source.lower().startswith(("http", "www", "kaggle")):
         return URLDataIngester(source, download_dir)
     elif os.path.isfile(source):
         return FileDataIngester(source, download_dir)
     else:
         raise ValueError(f"Could not recognize source type for: {source}")
 
+
+logging.info("Data ingestion completed.")
 
 if __name__ == "__main__":
     # source_path_or_url = "your-dataset-url-or-path"
