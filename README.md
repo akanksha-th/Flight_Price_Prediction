@@ -1,5 +1,10 @@
-## Project Structure
+# Flight Price Prediction - End-to-End ML Pipeline
 
+This project implements a complete end-to-end machine learning workflow for predicting flight prices. It has been trained on a smaller kaggle dataset, and showcases how to structure reproducible ML pipelines locally using ZenML and track experiments with MLflow.
+
+---
+
+## Project Structure
     .
     │   .gitignore
     │   README.md
@@ -55,3 +60,39 @@
             model_building_step.py
             model_evaluator_step.py
             __init__.py
+
+---
+
+## Project Highlights
+
+- Local Development: lightweight, easy to run on personal machine.
+- ZenML: reproducible ML pipeline (data ingestion → preprocessing → model training → evaluation).
+- MLflow: experiment tracking, metrics logging, and model versioning.
+- Use Case: regression problem — predict flight ticket prices based on input features (e.g., airline, source, destination, duration, stops).
+
+---
+
+## Tech Stack
+
+    Python
+    ZenML (pipeline orchestration)
+    MLflow (tracking & registry)
+    Scikit-learn / XGBoost (models)
+    Pandas, Numpy, Matplotlib (data + viz)
+
+---
+
+## How to Run
+
+# Clone repo
+git clone <repo-url>
+cd flight-price-prediction
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run pipeline
+python run_pipeline.py
+
+# Start MLflow UI
+mlflow ui
