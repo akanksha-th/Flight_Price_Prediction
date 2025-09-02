@@ -6,10 +6,10 @@ from .dimensionality_reduction import DimReducerConfig, DimReducerFactory
 __all__ = [
     "ImputerConfig",
     "ImputeFactory",
-    "ScalingConfig",
+    "ScalerConfig",
     "ScalerFactory",
-    "EncodingConfig",
+    "EncoderConfig",
     "EncoderFactory",
-    "DimRedConfig",
+    "DimReducerConfig",
     "DimReducerFactory",
 ]
