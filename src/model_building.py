@@ -1,107 +1,132 @@
-import numpy as np
-import pandas as pd
-
 from dataclasses import dataclass
+from typing import List, Optional
 from abc import ABC, abstractmethod
-from typing import Optional, List, Iterable, Any
+import joblib
+import os
 
-from sklearn.base import RegressorMixin
-from sklearn.linear_model import LinearRegression, Ridge, ElasticNet
-from sklearn.compose import TransformedTargetRegressor
+from sklearn.linear_model import LinearRegression, Ridge, Lasso
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, VotingRegressor, BaggingRegressor, StackingRegressor, AdaBoostRegressor
+from sklearn.svm import SVR
+from sklearn.tree import DecisionTreeRegressor
 
-
-# ------------------ Config ------------------
+# ---------------------- Config Dataclass ----------------------
 @dataclass
 class ModelConfig:
-    random_state: int = 37
-    target_log_transform: bool = True
+    baseline_models: Optional[List[str]] = None  # List of baseline model names
+    ensemble_method: Optional[str] = None        # 'voting', 'bagging', 'boosting', 'stacking'
+    random_state: int = 42
+    save_path: str = "models"                    # directory to save models
+    model_name: str = "trained_model.pkl"       # filename
 
-    # Feature Overrides
-    numeric_features: Optional[List[str]] = None
-    categorical_features: Optional[List[str]] = None
+# ---------------------- Base Builder ----------------------
+class BaseModelBuilder(ABC):
+    def __init__(self, config: ModelConfig):
+        self.config = config
+        self.models = self._init_baselines()
+        self.ensemble_model = None
+        os.makedirs(self.config.save_path, exist_ok=True)
 
-    # Cross-validation strategy
-    cv_strategy: str = 'kfold'
-    cv_splits: int = 5
-    groups: Optional[Iterable[Any]] = None
-
-    # Search/ optimization
-    enable_model_selection: bool = True
-    n_iter_Search: int = 30
-    scoring: str = "neg_mean_absolute_error"
-    n_jobs: int = -1
-
-    model_path: str = "Trained_flight_price_model.joblib"
-
-
-class ModelBuildingStrategy(ABC):
     @abstractmethod
-    def build_and_train_model(self, X_train: pd.DataFrame, y_train: pd.Series, config=None) -> RegressorMixin:
+    def build_ensemble(self):
         pass
 
+    def _init_baselines(self):
+        """Initialize baseline models based on config"""
+        baseline_map = {
+            'linear': LinearRegression(),
+            'ridge': Ridge(random_state=self.config.random_state),
+            'lasso': Lasso(random_state=self.config.random_state),
+            'rf': RandomForestRegressor(random_state=self.config.random_state),
+            'gbr': GradientBoostingRegressor(random_state=self.config.random_state),
+            'dt': DecisionTreeRegressor(random_state=self.config.random_state),
+            'svr': SVR()
+        }
+        models = {}
+        if not self.config.baseline_models:
+            self.config.baseline_models = ['linear', 'ridge', 'rf', 'gbr']
+        for name in self.config.baseline_models:
+            if name not in baseline_map:
+                raise ValueError(f"Unknown baseline model: {name}")
+            models[name] = baseline_map[name]
+        return models
 
-# ------------------ Strategies ------------------
-class LinearModelsStrategy(ModelBuildingStrategy):
-    def __init__(self, model: str = 'ridge'):
-        assert model in {"linear", "ridge", "elasticnet"}, "Invalid model type"
-        self.model_name = model
+    # ---------------------- Save / Load ----------------------
+    def save_model(self, model=None, filename=None):
+        model_to_save = model or self.ensemble_model or list(self.models.values())[0]
+        file_path = os.path.join(self.config.save_path, filename or self.config.model_name)
+        joblib.dump(model_to_save, file_path)
+        print(f"Model saved at: {file_path}")
 
-    def _get_estimator(self, config: ModelConfig):
-        if self.model_name == 'linear':
-            return LinearRegression()
-        elif self.model_name == 'ridge':
-            return Ridge(random_state=config.random_state, max_iter=10000)
-        elif self.model_name == 'elasticnet':
-            return ElasticNet(random_state=config.random_state, max_iter=10000)
+    def load_model(self, filename=None):
+        file_path = os.path.join(self.config.save_path, filename or self.config.model_name)
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"No saved model found at: {file_path}")
+        loaded_model = joblib.load(file_path)
+        print(f"Model loaded from: {file_path}")
+        return loaded_model
 
-    def build_and_train_model(self, X_train, y_train, config=None):
-        cfg = config or ModelConfig()
-        estimator = self._get_estimator(cfg)
-        if cfg.target_log_transform:
-            estimator = TransformedTargetRegressor(
-                regressor=estimator, func=np.log1p, inverse_func=np.expm1
-            )
-        estimator.fit(X_train, y_train)
-        return estimator
+# ---------------------- Regressor Builder ----------------------
+class RegressorBuilder(BaseModelBuilder):
+    def build_ensemble(self):
+        if not self.config.ensemble_method:
+            return None
 
+        ensemble_map = {
+            'voting': VotingRegressor,
+            'bagging': BaggingRegressor,
+            'boosting': AdaBoostRegressor,
+            'stacking': StackingRegressor
+        }
 
-class TreeEnsembleStrategy(ModelBuildingStrategy):
-    def build_and_train_model(self, X_train, y_train, config=None):
-        pass
+        if self.config.ensemble_method not in ensemble_map:
+            raise ValueError(f"Unknown ensemble method: {self.config.ensemble_method}")
 
+        if self.config.ensemble_method in ['voting', 'stacking']:
+            estimator_list = [(name, model) for name, model in self.models.items()]
+            if self.config.ensemble_method == 'voting':
+                self.ensemble_model = VotingRegressor(estimators=estimator_list)
+            else:
+                # Stacking with Ridge as final estimator
+                self.ensemble_model = StackingRegressor(
+                    estimators=estimator_list,
+                    final_estimator=Ridge()
+                )
+        else:
+            # Bagging / Boosting wrap a single baseline
+            base_model = list(self.models.values())[0]
+            if self.config.ensemble_method == 'bagging':
+                self.ensemble_model = BaggingRegressor(base_model, n_estimators=10, random_state=self.config.random_state)
+            else:
+                self.ensemble_model = AdaBoostRegressor(base_model, n_estimators=50, random_state=self.config.random_state)
 
-class ModelSeclectionStrategy(ModelBuildingStrategy):
-    def build_and_train_model(self, X_train, y_train, config=None):
-        pass
+        return self.ensemble_model
 
+# ---------------------- Factory ----------------------
+class ModelBuilderFactory:
+    @staticmethod
+    def get_builder(config: ModelConfig) -> BaseModelBuilder:
+        return RegressorBuilder(config)
 
-# ------------------ Facade ------------------
-class ModelBuilder:
-    def __init__(self, strategy: ModelBuildingStrategy):
-        self._strategy = strategy
-
-    def set_strategy(self, strategy: ModelBuildingStrategy):
-        self._strategy = strategy
-
-    def build_model(self, X_train, y_train, config=None):
-        return self._strategy.build_and_train_model(X_train, y_train, config)
-
-
-# ------------------ Evaluation ------------------
-def evaluate(model, X_val, y_val):
-    pass
-
-def save_model():
-    pass
-
-def load_model():
-    pass
-
-
+# ---------------------- Example Usage ----------------------
 if __name__ == "__main__":
-    # df = pd.read_csv("path-to-the-csv-file")
-    # X = training features
-    # y = target feature
-    # builder = ModelBuilder(LinearModelsStrategy())
-    # model = builder.build.model(X, y)
-    pass
+    config = ModelConfig(
+        baseline_models=['linear', 'rf', 'gbr'],
+        ensemble_method='stacking',
+        save_path='models',
+        model_name='flight_price_model.pkl'
+    )
+    builder = ModelBuilderFactory.get_builder(config)
+
+    print("Baseline Models:")
+    for name, model in builder.models.items():
+        print(f"{name}: {model}")
+
+    ensemble_model = builder.build_ensemble()
+    print("\nEnsemble Model:")
+    print(ensemble_model)
+
+    # Save model
+    builder.save_model()
+
+    # Load model
+    loaded_model = builder.load_model()
