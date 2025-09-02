@@ -4,6 +4,7 @@ from .feature_transformation_step import feature_transformation
 from .feature_selection_step import feature_selection
 from .data_splitter_step import split_data
 from .model_building_step import model_building
+from .model_training_step import model_training
 from .model_evaluator_step import model_evaluator
 
 __all__ = [
@@ -14,5 +15,6 @@ __all__ = [
     "feature_selection",
     "split_data",
     "model_building",
+    "model_training",
     "model_evaluator",
 ]
