@@ -15,7 +15,7 @@ class ImputerConfig:
     n_neighbours: int = 5   # for KNN Imputer
     max_iter: int = 10    # for Iterative Imputer
     random_state: int = 17
-    add_missing_indicators: bool = True
+    add_missing_indicators: bool = False
     numeric_cols: Optional[List[str]] = None
     categorical_cols: Optional[List[str]] = None
     drop_threshold: float = 0.5  # Drop columns with missing ratio above 50%
@@ -74,7 +74,7 @@ class SimpleImputerClass(BaseImputer):
 class KnnImputer(BaseImputer):
     def __init__(self, df: pd.DataFrame, config: ImputerConfig):
         super().__init__(df, config)
-        self._imputer = KNNImputer(n_neighbors=self.config.n_neighbours, add_indicator=self.config.add_missing_indicators)
+        self._imputer = KNNImputer(n_neighbors=self.config.n_neighbours)
 
     def run(self) -> pd.DataFrame:
         numeric_cols = self._get_numeric_columns()
