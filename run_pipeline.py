@@ -22,10 +22,10 @@ def main():
 
     logger.info("✅ Pipeline finished successfully.")
 
-    print("\n📊 To inspect experiment runs in MLflow, run the following in your terminal:\n")
+    print("\n To inspect experiment runs in MLflow, run the following in your terminal:\n")
     print(f"    mlflow ui --backend-store-uri '{get_tracking_uri()}'\n")
     print("Then open http://127.0.0.1:5000 in your browser.\n")
-    print("🔍 You’ll find all experiment runs tracked under the experiment: 'flight_price_predictor'.")
+    print("You’ll find all experiment runs tracked under the experiment: 'flight_price_predictor'.")
 
 
 if __name__ == "__main__":
